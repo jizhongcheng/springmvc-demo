@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+xmlns:jee="http://www.springframework.org/schema/jee"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd">
+    
+    
+     <!-- 配置视图解析器 -->
+     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+         <!-- 使用前缀和后缀 -->
+         <property name="prefix" value="/"></property>
+         <property name="suffix" value=".jsp"></property>
+     </bean>
+     
+     <!-- 使用组件扫描的方式可以一次扫描多个Controller -->
+     <context:component-scan base-package="com.etoak"></context:component-scan>
+
+ 
+	<!-- mvc命名空间提供的注解驱动 用于解析@ResponseBody注解-->
+	<mvc:annotation-driven/>
+    
+
+    <!-- 访问静态资源文件 -->
+    <mvc:resources mapping="/images/**" location="/images/" />
+    <mvc:resources mapping="/css/**" location="/css/" />  
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/imgdata/**" location="/imgdata/" />
+
+    
+    <!-- 拦截器 -->  
+   <mvc:interceptors>
+    <!-- 对所有请求都拦截，公共拦截器可以有多个 -->  
+     <bean name="baseInterceptor" class="com.etoak.filter.BaseInterceptor" />
+     <bean name="testInterceptor" class="com.etoak.filter.TestInterceptor" />
+     <mvc:interceptor>
+        <!-- 对/test.html进行拦截 -->  
+         <mvc:mapping path="/test.html"/>
+        <!-- 不进行拦截 -->
+         <mvc:exclude-mapping path="/index.html"/>
+        <!-- 特定请求的拦截器只能有一个 -->  
+         <bean class="com.etoak.filter.TestInterceptor">
+         	<property name="testString" value="jizhongcheng"></property>
+         </bean>
+     </mvc:interceptor>
+ </mvc:interceptors>
+
+
+
+ </beans>
